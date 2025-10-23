@@ -1,0 +1,13 @@
+<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="#e8f5e8"/>
+  <rect x="2" y="2" width="396" height="296" fill="none" stroke="#d32f2f" stroke-width="2"/>
+  <path d="M80 220 Q200 100 320 220" stroke="#d32f2f" stroke-width="4" fill="none"/>
+  <circle cx="80" cy="220" r="8" fill="#d32f2f"/>
+  <circle cx="320" cy="220" r="8" fill="#d32f2f"/>
+  <text x="50%" y="55%" font-family="Arial" font-size="16" text-anchor="middle" fill="#d32f2f" font-weight="bold">
+    Con đường quá độ
+  </text>
+  <text x="50%" y="65%" font-family="Arial" font-size="12" text-anchor="middle" fill="#666">
+    "Bỏ qua" TBCN
+  </text>
+</svg>

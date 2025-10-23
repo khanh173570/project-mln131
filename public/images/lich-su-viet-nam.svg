@@ -1,0 +1,11 @@
+<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="#fff8e1"/>
+  <rect x="2" y="2" width="396" height="296" fill="none" stroke="#d32f2f" stroke-width="2"/>
+  <path d="M50 200 L100 150 L150 180 L200 120 L250 160 L300 100 L350 140" stroke="#d32f2f" stroke-width="3" fill="none"/>
+  <text x="50%" y="55%" font-family="Arial" font-size="16" text-anchor="middle" fill="#d32f2f" font-weight="bold">
+    Lịch sử Việt Nam
+  </text>
+  <text x="50%" y="65%" font-family="Arial" font-size="12" text-anchor="middle" fill="#666">
+    Quá trình phát triển
+  </text>
+</svg>
