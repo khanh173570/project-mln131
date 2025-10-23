@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import QuizSection from "./QuizSection";
 
 // CSS để ẩn thanh cuộn
 const hideScrollbarStyles = `
@@ -1423,6 +1424,9 @@ const ContentSection = () => {
             ))}
           </div>
         </motion.div>
+
+        {/* Quiz Section */}
+        <QuizSection />
 
         {/* Phần Thành Viên */}
         <motion.div
