@@ -1817,7 +1817,7 @@ const ContentSection = () => {
                                 "#43e97b",
                                 "#fa709a",
                                 "#a8edea",
-                                "#ffecd2",
+                                "#12100e",
                                 "#fcb69f",
                               ];
                               const color = colors[idx % colors.length];
