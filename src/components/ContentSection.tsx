@@ -1901,9 +1901,7 @@ const ContentSection = () => {
                                 justifyContent: "center",
                               }}
                             >
-                              <span style={{ fontSize: "28px" }}>📈</span>
                               Phương Hướng Xây Dựng CNXH
-                              <span style={{ fontSize: "28px" }}>🏛️</span>
                             </h4>
 
                             <div
