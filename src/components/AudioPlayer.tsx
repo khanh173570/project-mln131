@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { IoMdMusicalNote, IoMdMusicalNotes, IoIosArrowBack, IoIosArrowForward, IoMdClose } from 'react-icons/io';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -39,7 +39,11 @@ const songs: Song[] = [
   }
 ];
 
-const AudioPlayer = ({ isPlaying, setIsPlaying, currentSongIndex, setCurrentSongIndex, onBannerControl }: AudioPlayerProps) => {
+interface AudioPlayerExtendedProps extends AudioPlayerProps {
+  isChatOpen?: boolean;
+}
+
+const AudioPlayer = ({ isPlaying, setIsPlaying, currentSongIndex, setCurrentSongIndex, onBannerControl, isChatOpen = false }: AudioPlayerExtendedProps) => {
   const [expanded, setExpanded] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [progress, setProgress] = useState(0);
@@ -87,12 +91,57 @@ const AudioPlayer = ({ isPlaying, setIsPlaying, currentSongIndex, setCurrentSong
     setProgress(newProgress);
   };
 
+  const isPlayingRef = useRef(isPlaying);
+  const currentSongIndexRef = useRef(currentSongIndex);
+  
+  // Update refs when state changes
+  useEffect(() => {
+    isPlayingRef.current = isPlaying;
+  }, [isPlaying]);
+  
+  useEffect(() => {
+    currentSongIndexRef.current = currentSongIndex;
+  }, [currentSongIndex]);
+
+  const handleBannerToggle = useCallback(() => {
+    console.log("🎵 Banner toggle called, current isPlaying:", isPlayingRef.current);
+    
+    if (isPlayingRef.current) {
+      // Đang phát -> Dừng
+      if (audioRef.current) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+        console.log("Audio paused from banner");
+      }
+    } else {
+      // Không phát -> Bắt đầu phát
+      if (audioRef.current) {
+        // Nếu chưa có bài nào hoặc chưa từng phát, chọn ngẫu nhiên
+        if (currentSongIndexRef.current === 0 || audioRef.current.currentTime === 0) {
+          const randomIndex = getRandomSong();
+          console.log("Banner - selecting random song:", songs[randomIndex].title);
+          setIsPlaying(true); // Set isPlaying trước khi thay đổi bài hát
+          setCurrentSongIndex(randomIndex);
+          return; // useEffect sẽ tự động phát
+        }
+        
+        // Phát bài hiện tại
+        audioRef.current.play().then(() => {
+          setIsPlaying(true);
+          console.log("Audio resumed from banner");
+        }).catch(error => {
+          console.error("Error resuming audio:", error);
+        });
+      }
+    }
+  }, []); // Không có dependency nào
+
   useEffect(() => {
     // Truyền function điều khiển lên App.tsx
     if (onBannerControl) {
       onBannerControl(handleBannerToggle);
     }
-  }, [onBannerControl]);
+  }, [onBannerControl, handleBannerToggle]);
 
   useEffect(() => {
     // Create audio element if it doesn't exist
@@ -162,16 +211,34 @@ const AudioPlayer = ({ isPlaying, setIsPlaying, currentSongIndex, setCurrentSong
       // Nếu isPlaying = true, tự động phát
       if (isPlaying) {
         console.log("Auto-playing song:", songs[currentSongIndex].title);
-        setTimeout(() => {
-          if (audioRef.current && isPlaying) {
-            audioRef.current.play().catch(error => {
+        
+        // Đợi audio load xong rồi mới phát
+        const handleCanPlay = () => {
+          if (audioRef.current) {
+            audioRef.current.play().then(() => {
+              console.log("Auto-play successful");
+            }).catch(error => {
               console.error("Error auto-playing:", error);
+              setIsPlaying(false); // Nếu không phát được, set lại state
             });
           }
-        }, 50);
+          audioRef.current?.removeEventListener('canplay', handleCanPlay);
+        };
+        
+        audioRef.current.addEventListener('canplay', handleCanPlay);
+        
+        // Fallback sau 200ms nếu canplay không trigger
+        setTimeout(() => {
+          if (audioRef.current && audioRef.current.readyState >= 3) {
+            audioRef.current.play().catch(error => {
+              console.error("Error fallback auto-playing:", error);
+              setIsPlaying(false);
+            });
+          }
+        }, 200);
       }
     }
-  }, [currentSongIndex]);
+  }, [currentSongIndex]); // Chỉ depend vào currentSongIndex
 
   const togglePlay = () => {
     if (audioRef.current) {
@@ -193,6 +260,7 @@ const AudioPlayer = ({ isPlaying, setIsPlaying, currentSongIndex, setCurrentSong
         if (audioRef.current.currentTime === 0) {
           const randomIndex = getRandomSong();
           console.log("First time playing - selecting random song:", songs[randomIndex].title);
+          setIsPlaying(true); // Set isPlaying trước khi thay đổi bài hát
           setCurrentSongIndex(randomIndex);
           return; // useEffect sẽ handle việc phát nhạc
         }
@@ -248,52 +316,31 @@ const AudioPlayer = ({ isPlaying, setIsPlaying, currentSongIndex, setCurrentSong
     setExpanded(!expanded);
   };
 
-  const handleBannerToggle = () => {
-    console.log("🎵 Banner toggle called, current isPlaying:", isPlaying);
-    
-    if (isPlaying) {
-      // Đang phát -> Dừng
-      if (audioRef.current) {
-        audioRef.current.pause();
-        setIsPlaying(false);
-        console.log("Audio paused from banner");
-      }
-    } else {
-      // Không phát -> Bắt đầu phát
-      if (audioRef.current) {
-        // Nếu chưa có bài nào, chọn ngẫu nhiên
-        if (currentSongIndex === 0) {
-          const randomIndex = getRandomSong();
-          console.log("Banner - selecting random song:", songs[randomIndex].title);
-          setCurrentSongIndex(randomIndex);
-          return; // useEffect sẽ tự động phát
-        }
-        
-        // Phát bài hiện tại
-        audioRef.current.play().then(() => {
-          setIsPlaying(true);
-          console.log("Audio resumed from banner");
-        }).catch(error => {
-          console.error("Error resuming audio:", error);
-        });
-      }
+  // Tự động đóng expanded player khi chat box mở
+  useEffect(() => {
+    if (isChatOpen) {
+      setExpanded(false);
     }
-  };
+  }, [isChatOpen]);
 
   return (
     <>
       <motion.button
         onClick={handleMainButtonClick}
         initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        whileHover={{ scale: 1.1 }}
+        animate={{ 
+          opacity: isChatOpen ? 0.3 : 1, 
+          scale: isChatOpen ? 0.8 : 1,
+          x: isChatOpen ? -80 : 0 // Di chuyển sang trái khi chat mở
+        }}
+        whileHover={{ scale: isChatOpen ? 0.85 : 1.1 }}
         whileTap={{ scale: 0.95 }}
         style={{
           position: 'fixed',
-          bottom: '96px',
-          right: '24px',
-          zIndex: 50,
-          padding: '12px',
+          bottom: '88px', // Tăng từ 96px xuống 88px để tránh overlap
+          right: '16px',  // Căn chỉnh với chat button
+          zIndex: isChatOpen ? 35 : 50, // Giảm z-index khi chat mở
+          padding: '0', // Loại bỏ padding để có kích thước chính xác
           backgroundColor: '#d32f2f',
           color: 'white',
           borderRadius: '50%',
@@ -301,15 +348,17 @@ const AudioPlayer = ({ isPlaying, setIsPlaying, currentSongIndex, setCurrentSong
           boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
           cursor: 'pointer',
           transition: 'all 0.2s',
-          width: '48px',
-          height: '48px',
+          width: '64px', // Đồng nhất với chat button (w-16)
+          height: '64px', // Đồng nhất với chat button (h-16)
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = '#f44336';
-          e.currentTarget.style.boxShadow = '0 10px 15px rgba(0, 0, 0, 0.15)';
+          if (!isChatOpen) {
+            e.currentTarget.style.backgroundColor = '#f44336';
+            e.currentTarget.style.boxShadow = '0 10px 15px rgba(0, 0, 0, 0.15)';
+          }
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.backgroundColor = '#d32f2f';
@@ -318,14 +367,14 @@ const AudioPlayer = ({ isPlaying, setIsPlaying, currentSongIndex, setCurrentSong
         aria-label="Toggle music player"
       >
         {isPlaying ? (
-          <IoMdMusicalNotes style={{ width: '24px', height: '24px' }} />
+          <IoMdMusicalNotes style={{ width: '28px', height: '28px' }} />
         ) : (
-          <IoMdMusicalNote style={{ width: '24px', height: '24px' }} />
+          <IoMdMusicalNote style={{ width: '28px', height: '28px' }} />
         )}
       </motion.button>
 
       <AnimatePresence>
-        {expanded && (
+        {expanded && !isChatOpen && (
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -333,7 +382,7 @@ const AudioPlayer = ({ isPlaying, setIsPlaying, currentSongIndex, setCurrentSong
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             style={{
               position: 'fixed',
-              bottom: '96px',
+              bottom: '88px', // Điều chỉnh để phù hợp với vị trí nút
               right: '84px',
               backgroundColor: 'white',
               borderRadius: '8px',
