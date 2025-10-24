@@ -192,7 +192,7 @@ const sections: Section[] = [
           },
           {
             year: "Nội Dung Chính 2",
-            title: "Chính Mối Quan Hệ Lớn",
+            title: "Yêu cầu trong quá trình thực hiện",
             description:
               "Trong quá trình thực hiện tám phương hướng cơ bản, cần phải đặc biệt chú trọng nắm vững và giải quyết tốt các mối quan hệ lớn:",
             image: "/images/timeline2.jpg",
