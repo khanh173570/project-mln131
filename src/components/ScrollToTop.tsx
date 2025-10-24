@@ -37,10 +37,10 @@ const ScrollToTop = () => {
           exit={{ opacity: 0, scale: 0.8 }}
           style={{
             position: 'fixed',
-            bottom: '24px',
-            right: '24px',
+            bottom: '180px', // Tăng lên để tránh chồng với chat và music button
+            right: '16px',   // Căn chỉnh với các nút khác
             zIndex: 50,
-            padding: '12px',
+            padding: '0', // Loại bỏ padding để có kích thước chính xác
             backgroundColor: '#d32f2f',
             color: 'white',
             borderRadius: '50%',
@@ -48,8 +48,8 @@ const ScrollToTop = () => {
             boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
             cursor: 'pointer',
             transition: 'all 0.2s',
-            width: '48px',
-            height: '48px',
+            width: '64px',  // Đồng nhất với các nút khác
+            height: '64px', // Đồng nhất với các nút khác
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -66,7 +66,7 @@ const ScrollToTop = () => {
           }}
           aria-label="Scroll to top"
         >
-          <FaArrowUp style={{ width: '20px', height: '20px' }} />
+          <FaArrowUp style={{ width: '24px', height: '24px' }} />
         </motion.button>
       )}
     </>

@@ -25,6 +25,35 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--background);
   color: var(--text-primary);
+  /* Ẩn thanh cuộn */
+  overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE và Edge */
+}
+
+/* Ẩn thanh cuộn cho WebKit browsers (Chrome, Safari, Opera) */
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ẩn thanh cuộn cho tất cả các element có scroll */
+*::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+/* Class tùy chỉnh để ẩn thanh cuộn nhưng vẫn có thể scroll */
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE và Edge */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 h1, h2, h3, h4, h5, h6 {

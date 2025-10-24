@@ -4,7 +4,7 @@ import Navbar from './components/Navbar';
 import Banner from './components/Banner';
 import ContentSection from './components/ContentSection';
 import AudioPlayer from './components/AudioPlayer';
-import ScrollToTop from './components/ScrollToTop';
+import ChatBox from './components/ChatBox';
 import { motion } from 'framer-motion';
 
 function App() {
@@ -12,6 +12,7 @@ function App() {
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [bannerToggleFunction, setBannerToggleFunction] = useState<(() => void) | null>(null);
   const [initialized, setInitialized] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   // Auto play music khi trang load - add user interaction listener
   useEffect(() => {
@@ -75,8 +76,9 @@ function App() {
           currentSongIndex={currentSongIndex}
           setCurrentSongIndex={setCurrentSongIndex}
           onBannerControl={setBannerControl}
+          isChatOpen={isChatOpen}
         />
-        <ScrollToTop />
+        <ChatBox onChatToggle={setIsChatOpen} />
       </div>
     </Router>
   );
