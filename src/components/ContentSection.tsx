@@ -1090,13 +1090,7 @@ const ContentSection = () => {
                                           justifyContent: "center",
                                         }}
                                       >
-                                        <span style={{ fontSize: "28px" }}>
-                                          📈
-                                        </span>
                                         Phương Hướng Xây Dựng CNXH
-                                        <span style={{ fontSize: "28px" }}>
-                                          🏛️
-                                        </span>
                                       </h4>
 
                                       <div
@@ -2140,9 +2134,7 @@ const ContentSection = () => {
                                     gap: "12px",
                                   }}
                                 >
-                                  <span style={{ fontSize: "32px" }}>🏛️</span>
                                   12 Nhiệm vụ Cơ bản (Đại hội XII)
-                                  <span style={{ fontSize: "32px" }}>🎯</span>
                                 </h4>
                                 <p
                                   style={{
@@ -2193,7 +2185,7 @@ const ContentSection = () => {
                                       gap: "8px",
                                     }}
                                   >
-                                    💰 Nhiệm vụ 1-3
+                                    Nhiệm vụ 1-3
                                   </h5>
 
                                   {[
@@ -2289,7 +2281,7 @@ const ContentSection = () => {
                                       gap: "8px",
                                     }}
                                   >
-                                    🎭 Nhiệm vụ 4-6
+                                    Nhiệm vụ 4-6
                                   </h5>
 
                                   {[
@@ -2384,7 +2376,7 @@ const ContentSection = () => {
                                       gap: "8px",
                                     }}
                                   >
-                                    🛡️ Nhiệm vụ 7-9
+                                    Nhiệm vụ 7-9
                                   </h5>
 
                                   {[
@@ -2479,7 +2471,7 @@ const ContentSection = () => {
                                       gap: "8px",
                                     }}
                                   >
-                                    ⚖️ Nhiệm vụ 10-12
+                                    Nhiệm vụ 10-12
                                   </h5>
 
                                   {[
